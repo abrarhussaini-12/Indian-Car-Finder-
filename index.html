@@ -1,0 +1,1268 @@
+import React, { useState, useEffect } from 'react';
+
+const CARS_DATA = [
+  {
+    id: "nexon",
+    name: "Tata Nexon / Nexon EV",
+    brand: "Tata",
+    priceMin: 7.3,
+    priceMax: 14.5,
+    bodyType: "SUV",
+    seats: 5,
+    fuels: ["Petrol", "Diesel", "CNG", "Electric"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "17.5 kmpl (Petrol), 26.9 km/kg (CNG), 420 km (EV)",
+    safetyRating: 5,
+    strongSuit: ["Safety", "Features", "City Commute"],
+    desc: "India's highest selling compact SUV featuring stellar 5-star safety, multi-powertrain versatility, and cutting-edge tech features.",
+    imageUrl: "https://images.unsplash.com/photo-1626084323115-46f901cb001c?auto=format&fit=crop&q=80&w=600" // Red Nexon in pristine forest setting
+  },
+  {
+    id: "creta",
+    name: "Hyundai Creta / Creta EV",
+    brand: "Hyundai",
+    priceMin: 10.8,
+    priceMax: 20.1,
+    bodyType: "SUV",
+    seats: 5,
+    fuels: ["Petrol", "Diesel", "Electric"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "17.5 kmpl (Petrol), 21.8 kmpl (Diesel), 450 km (EV)",
+    safetyRating: 4,
+    strongSuit: ["Features", "Brand Reliability", "Highway/Long trips"],
+    desc: "The undisputed segment leader. It offers a premium cabin, panoramic sunroof, level-2 ADAS, and exceptional refinement.",
+    imageUrl: "https://images.unsplash.com/photo-1616422285623-13ff0162193c?auto=format&fit=crop&q=80&w=600" // Premium sleek white Creta-style crossover
+  },
+  {
+    id: "dzire",
+    name: "Maruti Suzuki Dzire",
+    brand: "Maruti Suzuki",
+    priceMin: 6.3,
+    priceMax: 9.4,
+    bodyType: "Sedan",
+    seats: 5,
+    fuels: ["Petrol", "CNG"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "24.8 kmpl (Petrol), 33.7 km/kg (CNG)",
+    safetyRating: 5,
+    strongSuit: ["Mileage", "Resale Value", "City Commute"],
+    desc: "India's favorite compact sedan. The latest generation boosts safety to an impressive 5-stars while preserving its legendary mileage.",
+    imageUrl: "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&q=80&w=600" // White elegant modern Dzire sedan model
+  },
+  {
+    id: "ertiga",
+    name: "Maruti Suzuki Ertiga",
+    brand: "Maruti Suzuki",
+    priceMin: 8.8,
+    priceMax: 13.0,
+    bodyType: "MPV",
+    seats: 7,
+    fuels: ["Petrol", "CNG"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "20.5 kmpl (Petrol), 26.1 km/kg (CNG)",
+    safetyRating: 3,
+    strongSuit: ["Seating", "Family use", "Resale Value", "Mileage"],
+    desc: "The quintessential family MPV. Unbeatable space efficiency and running costs for a comfortable 7-seater setup.",
+    imageUrl: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=600" // Silver spacious family Ertiga MPV wagon style
+  },
+  {
+    id: "punch",
+    name: "Tata Punch / Punch EV",
+    brand: "Tata",
+    priceMin: 5.7,
+    priceMax: 10.6,
+    bodyType: "SUV",
+    seats: 5,
+    fuels: ["Petrol", "CNG", "Electric"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "20.1 kmpl (Petrol), 27.0 km/kg (CNG), 315 km (EV)",
+    safetyRating: 5,
+    strongSuit: ["Safety", "City Commute", "Mileage"],
+    desc: "A bold, sub-compact SUV that combines micro dimensions for city streets with robust high seating and a 5-star safety badge.",
+    imageUrl: "https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?auto=format&fit=crop&q=80&w=600" // Teal/blue-grey modern subcompact Punch crossover
+  },
+  {
+    id: "scorpio",
+    name: "Mahindra Scorpio-N",
+    brand: "Mahindra",
+    priceMin: 13.2,
+    priceMax: 24.2,
+    bodyType: "SUV",
+    seats: 7,
+    fuels: ["Petrol", "Diesel"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "12.2 kmpl (Petrol), 15.9 kmpl (Diesel)",
+    safetyRating: 5,
+    strongSuit: ["Off-road", "Safety", "Family use", "Highway/Long trips"],
+    desc: "A true ladder-frame SUV beast. Boasts massive road presence, potent diesel/petrol torque, 4WD options, and immense durability.",
+    imageUrl: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=600" // Big aggressive black Scorpio SUV on mountain pass
+  },
+  {
+    id: "swift",
+    name: "Maruti Suzuki Swift",
+    brand: "Maruti Suzuki",
+    priceMin: 5.8,
+    priceMax: 8.8,
+    bodyType: "Hatchback",
+    seats: 5,
+    fuels: ["Petrol", "CNG"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "25.8 kmpl (Petrol), 32.9 km/kg (CNG)",
+    safetyRating: 3,
+    strongSuit: ["Mileage", "Brand Reliability", "City Commute"],
+    desc: "Fun to drive, easy to park, and extremely light on your wallet. A global hatchback icon with incredible fuel efficiency.",
+    imageUrl: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&q=80&w=600" // Sporty red racing Swift hatchback
+  },
+  {
+    id: "hycross",
+    name: "Toyota Innova Hycross",
+    brand: "Toyota",
+    priceMin: 18.3,
+    priceMax: 31.3,
+    bodyType: "MPV",
+    seats: 7,
+    fuels: ["Petrol", "Hybrid"],
+    transmissions: ["Automatic"],
+    mileage: "16.1 kmpl (Petrol), 23.2 kmpl (Strong Hybrid)",
+    safetyRating: 5,
+    strongSuit: ["Seating", "Family use", "Brand Reliability", "Resale Value", "Highway/Long trips"],
+    desc: "Premium, ultra-spacious, and luxurious MPV. Its strong hybrid powertrain delivers hatchback-like fuel efficiency with legendary reliability.",
+    imageUrl: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=600" // Dark grey luxury Innova Hycross multi-row van
+  },
+  {
+    id: "hyryder",
+    name: "Toyota Urban Cruiser Hyryder",
+    brand: "Toyota",
+    priceMin: 11.0,
+    priceMax: 19.8,
+    bodyType: "SUV",
+    seats: 5,
+    fuels: ["Petrol", "CNG", "Hybrid"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "21.1 kmpl (Petrol), 26.6 km/kg (CNG), 28.0 kmpl (Hybrid)",
+    safetyRating: 5,
+    strongSuit: ["Mileage", "Brand Reliability", "City Commute", "Highway/Long trips"],
+    desc: "Developed in collaboration with Suzuki, this stylish mid-size SUV offers a game-changing strong hybrid engine for maximum efficiency.",
+    imageUrl: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=600" // Metallic hybrid green-grey modern Hyryder SUV styling
+  },
+  {
+    id: "thar",
+    name: "Mahindra Thar Roxx (5-Door)",
+    brand: "Mahindra",
+    priceMin: 12.9,
+    priceMax: 22.5,
+    bodyType: "SUV",
+    seats: 5,
+    fuels: ["Petrol", "Diesel"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "12.4 kmpl (Petrol), 15.2 kmpl (Diesel)",
+    safetyRating: 5,
+    strongSuit: ["Off-road", "Safety", "Features"],
+    desc: "The ultimate lifestyle SUV made highly practical with 5 doors, a luxurious panoramic sunroof, stellar safety, and serious off-road gear.",
+    imageUrl: "https://images.unsplash.com/photo-1533557837482-993d0a79059e?auto=format&fit=crop&q=80&w=600" // Rugged off-road Thar black 4x4 crawling on stones
+  },
+  {
+    id: "virtus",
+    name: "Volkswagen Virtus",
+    brand: "Volkswagen",
+    priceMin: 11.5,
+    priceMax: 19.4,
+    bodyType: "Sedan",
+    seats: 5,
+    fuels: ["Petrol"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "18.1 kmpl (1.0 TSI), 20.1 kmpl (1.5 TSI)",
+    safetyRating: 5,
+    strongSuit: ["Features", "Safety", "Highway/Long trips"],
+    desc: "A gorgeous driver's sedan. Combining absolute driving dynamics, turbo-charged engines, massive boot space, and robust German safety.",
+    imageUrl: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=600" // German engineering cherry red Virtus sedan racing profile
+  },
+  {
+    id: "tiago",
+    name: "Tata Tiago / Tiago EV",
+    brand: "Tata",
+    priceMin: 4.7,
+    priceMax: 11.5,
+    bodyType: "Hatchback",
+    seats: 5,
+    fuels: ["Petrol", "CNG", "Electric"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "19.0 kmpl (Petrol), 26.5 km/kg (CNG), 250 km (EV)",
+    safetyRating: 4,
+    strongSuit: ["Safety", "City Commute", "Mileage"],
+    desc: "An incredible value hatchback that refuses to compromise on build quality, dynamic ride, and eco-friendly engine options.",
+    imageUrl: "https://images.unsplash.com/photo-1609521263047-f8f205293f24?auto=format&fit=crop&q=80&w=600" // Compact entry teal city commuter Tiago hatchback
+  },
+  {
+    id: "seltos",
+    name: "Kia Seltos",
+    brand: "Kia",
+    priceMin: 11.0,
+    priceMax: 20.3,
+    bodyType: "SUV",
+    seats: 5,
+    fuels: ["Petrol", "Diesel"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "17.7 kmpl (Petrol), 21.8 kmpl (Diesel)",
+    safetyRating: 3,
+    strongSuit: ["Features", "Brand Reliability", "Highway/Long trips"],
+    desc: "Sleek, futuristic design packed with segment-first features like dual panoramic screens, ventilated seats, and premium Bose audio.",
+    imageUrl: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=600" // Futuristic steel grey premium Seltos midsize SUV
+  },
+  {
+    id: "fronx",
+    name: "Maruti Suzuki Fronx",
+    brand: "Maruti Suzuki",
+    priceMin: 6.9,
+    priceMax: 12.0,
+    bodyType: "SUV",
+    seats: 5,
+    fuels: ["Petrol", "CNG"],
+    transmissions: ["Manual", "Automatic"],
+    mileage: "21.8 kmpl (Petrol), 28.5 km/kg (CNG)",
+    safetyRating: 4,
+    strongSuit: ["Mileage", "City Commute", "Features"],
+    desc: "A gorgeous coupe-style SUV based on the Baleno platform, offering premium styling, great ground clearance, and reliable mileage.",
+    imageUrl: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600" // Modern sporty Fronx coupe-crossover driving style
+  }
+];
+
+export default function App() {
+  const [currentStep, setCurrentStep] = useState(0);
+  
+  const [seating, setSeating] = useState(null); 
+  const [distance, setDistance] = useState(null); 
+  const [useCase, setUseCase] = useState(null); 
+  const [fuel, setFuel] = useState(null); 
+  const [transmission, setTransmission] = useState(null); 
+  const [budget, setBudget] = useState([5, 35]); 
+  const [bodyType, setBodyType] = useState(null); 
+  const [priorities, setPriorities] = useState([]); 
+  
+  const [recommendations, setRecommendations] = useState([]);
+  const [compareList, setCompareList] = useState([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleNextStep = () => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentStep(prev => prev + 1);
+      setIsAnimating(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 280);
+  };
+
+  const handlePrevStep = () => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentStep(prev => prev - 1);
+      setIsAnimating(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 280);
+  };
+
+  const resetConfigurator = () => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setSeating(null);
+      setDistance(null);
+      setUseCase(null);
+      setFuel(null);
+      setTransmission(null);
+      setBudget([5, 35]);
+      setBodyType(null);
+      setPriorities([]);
+      setCompareList([]);
+      setCurrentStep(0);
+      setIsAnimating(false);
+    }, 280);
+  };
+
+  const handlePriorityToggle = (item) => {
+    if (priorities.includes(item)) {
+      setPriorities(prev => prev.filter(p => p !== item));
+    } else {
+      if (priorities.length < 3) {
+        setPriorities(prev => [...prev, item]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (currentStep === 8) {
+      calculateRecommendations();
+    }
+  }, [currentStep]);
+
+  const calculateRecommendations = () => {
+    const scoredCarsList = CARS_DATA.map(car => {
+      let score = 100;
+      let matchReasons = [];
+      let mismatchReasons = [];
+
+      // 1. Seating Capacity Check
+      if (seating) {
+        if (seating === 7 && car.seats < 7) {
+          score -= 30;
+          mismatchReasons.push("Need 7+ seating capacity");
+        } else if (seating === 6 && car.seats < 6) {
+          score -= 20;
+          mismatchReasons.push("Need 6+ seating capacity");
+        } else if (seating === 5 && car.seats < 5) {
+          score -= 15;
+          mismatchReasons.push("Need 5-seater cabin");
+        } else {
+          matchReasons.push(`Perfect ${car.seats}-seater seating capacity`);
+        }
+      }
+
+      // 2. Budget Scoring
+      const carMin = car.priceMin;
+      const carMax = car.priceMax;
+      const [userMin, userMax] = budget;
+
+      if (carMin > userMax) {
+        const diff = carMin - userMax;
+        score -= Math.min(40, diff * 5);
+        mismatchReasons.push(`Exceeds preferred budget limit of ₹${userMax}L`);
+      } else if (carMax < userMin) {
+        matchReasons.push("Under your budget limit (Great value choice)");
+      } else {
+        matchReasons.push(`Fits comfortably in ₹${userMin}L - ₹${userMax}L budget bracket`);
+      }
+
+      // 3. Primary Use Case & Custom Dynamic Scenarios
+      if (useCase) {
+        if (useCase === 'city_highway') {
+          const hasCity = car.strongSuit.includes("City Commute");
+          const hasHighway = car.strongSuit.includes("Highway/Long trips");
+          if (hasCity && hasHighway) {
+            score += 25;
+            matchReasons.push("Dual-purpose champion: optimized for daily city streets & long weekend cruise");
+          } else if (hasCity || hasHighway) {
+            score += 15;
+            matchReasons.push(`Versatile dynamics (Handles ${hasCity ? "Metropolitan traffic" : "Expressway touring"} exceptionally)`);
+          }
+        } else if (useCase === 'highway_offroad') {
+          const hasHighway = car.strongSuit.includes("Highway/Long trips");
+          const hasOffroad = car.strongSuit.includes("Off-road");
+          if (hasHighway && hasOffroad) {
+            score += 25;
+            matchReasons.push("Adventure-ready: superb high-speed stability with active off-road capabilities");
+          } else if (hasHighway || hasOffroad) {
+            score += 12;
+            matchReasons.push(`Equipped to handle ${hasHighway ? "Long highway stretches" : "rugged wilderness trails"}`);
+          }
+        } else {
+          const useCaseLabels = {
+            city: "City Commute",
+            highway: "Highway/Long trips",
+            offroad: "Off-road",
+            family: "Family use"
+          };
+          const mappedUseCase = useCaseLabels[useCase];
+          if (car.strongSuit.includes(mappedUseCase)) {
+            score += 15;
+            matchReasons.push(`Built specifically for ${mappedUseCase}`);
+          } else if (useCase === 'offroad' && !car.strongSuit.includes("Off-road")) {
+            score -= 25;
+            mismatchReasons.push("Not optimized for rugged off-road paths");
+          }
+        }
+      }
+
+      // 4. Fuel Preference Matching
+      if (fuel && fuel !== 'Any') {
+        if (car.fuels.includes(fuel)) {
+          score += 20;
+          matchReasons.push(`Available in preferred ${fuel} engine`);
+        } else {
+          score -= 15;
+          mismatchReasons.push(`Not available in ${fuel}`);
+        }
+      }
+
+      // 5. Transmission Preference Matching
+      if (transmission && transmission !== 'Any') {
+        if (car.transmissions.includes(transmission)) {
+          score += 15;
+          matchReasons.push(`Supports ${transmission} transmission`);
+        } else {
+          score -= 20;
+          mismatchReasons.push(`No native ${transmission} gearbox option`);
+        }
+      }
+
+      // 6. Body Type Matching
+      if (bodyType && bodyType !== 'Any') {
+        if (car.bodyType.toLowerCase() === bodyType.toLowerCase()) {
+          score += 20;
+          matchReasons.push(`Classic high-demand ${car.bodyType} body layout`);
+        } else {
+          score -= 15;
+          mismatchReasons.push(`Different layout than your choice of ${bodyType}`);
+        }
+      }
+
+      // 7. Mileage vs Distance Driven Relationship (including Not Sure option)
+      if (distance && distance !== 'notsure') {
+        if ((distance === 'long' || distance === 'verylong') && (car.fuels.includes("Electric") || car.fuels.includes("Hybrid"))) {
+          score += 15;
+          matchReasons.push("Electric/Hybrid setup means huge savings for high daily drives");
+        }
+        if (distance === 'verylong' && car.fuels.includes("CNG")) {
+          score += 10;
+          matchReasons.push("CNG provides affordable running costs for longer commutes");
+        }
+      } else if (distance === 'notsure') {
+        if (car.fuels.includes("Hybrid") || car.fuels.includes("Petrol")) {
+          score += 10;
+          matchReasons.push("Unpredictable running: Highly flexible & worry-free powertrain choice");
+        }
+      }
+
+      // 8. Priority Boosts
+      priorities.forEach((priority, index) => {
+        const rankMultiplier = (3 - index);
+        if (priority === 'Safety' && car.safetyRating >= 4) {
+          score += rankMultiplier * 10;
+          matchReasons.push(`High Priority Match: Solid ${car.safetyRating}-Star Safety record`);
+        }
+        if (priority === 'Mileage') {
+          if (car.name.includes("Swift") || car.name.includes("Dzire") || car.name.includes("Hycross") || car.name.includes("Hyryder")) {
+            score += rankMultiplier * 10;
+            matchReasons.push(`High Priority Match: Top-tier fuel-efficient vehicle`);
+          }
+        }
+        if (priority === 'Features' && car.strongSuit.includes("Features")) {
+          score += rankMultiplier * 10;
+          matchReasons.push(`High Priority Match: Fully loaded feature set & tech`);
+        }
+        if (priority === 'Brand Reliability' && (car.brand === 'Toyota' || car.brand === 'Hyundai')) {
+          score += rankMultiplier * 10;
+          matchReasons.push(`High Priority Match: Elite durability and customer trust`);
+        }
+        if (priority === 'Resale Value' && (car.brand === 'Maruti Suzuki' || car.brand === 'Toyota')) {
+          score += rankMultiplier * 10;
+          matchReasons.push(`High Priority Match: Highly active used-car market demand`);
+        }
+      });
+
+      const finalScore = Math.max(10, Math.min(99, score));
+
+      return {
+        ...car,
+        score: finalScore,
+        matchReasons: [...new Set(matchReasons)].slice(0, 3),
+        mismatchReasons: [...new Set(mismatchReasons)].slice(0, 2)
+      };
+    });
+
+    const sorted = scoredCarsList.sort((a, b) => b.score - a.score);
+    setRecommendations(sorted);
+    if (sorted.length >= 2) {
+      setCompareList([sorted[0].id, sorted[1].id]);
+    }
+  };
+
+  const handleCompareCheck = (id) => {
+    setCompareList(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(item => item !== id);
+      } else {
+        if (prev.length < 3) {
+          return [...prev, id];
+        }
+        return prev;
+      }
+    });
+  };
+
+  const currentProgress = ((currentStep) / 8) * 100;
+
+  return (
+    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans antialiased flex flex-col justify-between">
+      
+      {/* Premium Apple Navbar */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#D2D2D7]/50 transition-all duration-300">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <svg className="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71,19.5 C17.88,20.74 17,21.95 15.66,21.97 C14.32,22 13.89,21.18 12.37,21.18 C10.84,21.18 10.37,21.95 9.1,22 C7.79,22.05 6.8,20.68 5.96,19.48 C4.25,17 2.94,12.45 4.7,9.39 C5.57,7.87 7.13,6.91 8.82,6.88 C10.1,6.86 11.32,7.75 12.11,7.75 C12.89,7.75 14.37,6.68 15.92,6.84 C16.57,6.87 18.39,7.1 19.56,8.82 C19.47,8.88 17.39,10.1 17.41,12.63 C17.44,15.65 20.06,16.66 20.1,16.67 C20.08,16.74 19.67,18.11 18.71,19.5 M15.97,4.17 C16.63,3.37 17.07,2.28 16.95,1 C16,1.04 14.9,1.6 14.25,2.38 C13.68,3.04 13.19,4.14 13.34,5.39 C14.39,5.47 15.4,4.88 15.97,4.17 Z" />
+            </svg>
+            <span className="font-semibold text-[15px] tracking-tight">Car Finder</span>
+            <span className="text-xs bg-neutral-100 px-2 py-0.5 rounded-full text-neutral-500 font-normal">India 2026 Edition</span>
+          </div>
+          
+          <div className="flex items-center space-x-6 text-sm">
+            {currentStep > 0 && currentStep < 8 && (
+              <button 
+                onClick={resetConfigurator} 
+                className="text-neutral-500 hover:text-black transition-colors"
+              >
+                Start Over
+              </button>
+            )}
+            <a href="https://www.carwale.com" target="_blank" rel="noreferrer" className="text-xs text-[#0066CC] hover:underline flex items-center space-x-1">
+              <span>View Live Prices</span>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        {currentStep < 9 && (
+          <div className="w-full h-[3px] bg-neutral-100">
+            <div 
+              className="h-full bg-black transition-all duration-500 ease-out"
+              style={{ width: `${currentProgress}%` }}
+            ></div>
+          </div>
+        )}
+      </header>
+
+      {/* Main Container */}
+      <main className="max-w-4xl mx-auto px-4 py-8 md:py-16 flex-grow w-full flex flex-col justify-center">
+        <div className={`transition-opacity duration-300 ${isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+          
+          {/* Step 0: Welcome Screen */}
+          {currentStep === 0 && (
+            <div className="text-center space-y-8 max-w-2xl mx-auto py-8">
+              <span className="text-xs font-semibold tracking-wider text-neutral-500 uppercase">Interactive Configurator</span>
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#1D1D1F] leading-tight">
+                Find the perfect car for Indian roads.
+              </h1>
+              <p className="text-xl text-neutral-500 leading-relaxed max-w-xl mx-auto font-normal">
+                Answer a few beautifully simple questions about your routine, priorities, and budget. We’ll calculate your score from the latest 2026 Indian market lineup.
+              </p>
+              <div className="pt-6">
+                <button
+                  onClick={handleNextStep}
+                  className="px-8 py-4 bg-black text-white rounded-full font-medium text-lg hover:bg-[#1D1D1F] transition-all hover:scale-105 active:scale-95 shadow-sm"
+                >
+                  Start Your Search
+                </button>
+              </div>
+              <p className="text-xs text-neutral-400">
+                Calculated on live 2026 parameters including real-world fuel economy and global NCAP safety rankings.
+              </p>
+            </div>
+          )}
+
+          {/* Step 1: Seating Capacity */}
+          {currentStep === 1 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 1 of 8 — Seating</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">How many people ride together?</h2>
+                <p className="text-neutral-500 text-lg">Choose the ideal seating configuration for your daily drive.</p>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto pt-6">
+                {[
+                  { value: 4, title: "Up to 4 People", desc: "Perfect for young professionals, couples or second city cars.", icon: "🚗" },
+                  { value: 5, title: "Comfortable 5-Seater", desc: "The standard family configuration. Fits hatchbacks, compact SUVs & sedans.", icon: "🚙" },
+                  { value: 7, title: "6 to 7+ Seaters", desc: "Large spacious three-row SUVs and MPVs for extended families.", icon: "🚐" }
+                ].map((item) => (
+                  <div
+                    key={item.value}
+                    onClick={() => setSeating(item.value)}
+                    className={`cursor-pointer p-6 rounded-2xl border-2 text-left bg-white transition-all duration-200 hover:border-black flex flex-col justify-between h-48 ${
+                      seating === item.value ? 'border-black ring-2 ring-black/5 shadow-md' : 'border-[#D2D2D7]/60'
+                    }`}
+                  >
+                    <div className="text-3xl">{item.icon}</div>
+                    <div>
+                      <h3 className="font-semibold text-lg text-neutral-800">{item.title}</h3>
+                      <p className="text-xs text-neutral-500 mt-1 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-center pt-8">
+                <button
+                  disabled={!seating}
+                  onClick={handleNextStep}
+                  className={`px-8 py-3 rounded-full font-medium transition-all ${
+                    seating 
+                      ? 'bg-black text-white hover:scale-105' 
+                      : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Driving Distance */}
+          {currentStep === 2 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 2 of 8 — Distance</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">What is your daily running?</h2>
+                <p className="text-neutral-500 text-lg">Estimating this helps us find the most cost-effective fuel layout.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto pt-6">
+                {[
+                  { id: "short", label: "Under 20 km / day", desc: "Primarily quick urban errands and local office commutes.", icon: "☕" },
+                  { id: "medium", label: "20 to 50 km / day", desc: "Moderate daily commute with frequent weekend outings.", icon: "🏢" },
+                  { id: "long", label: "50 to 100 km / day", desc: "Long cross-city or inter-city runs. Fuel economy is major.", icon: "🛣️" },
+                  { id: "verylong", label: "Over 100 km / day", desc: "Extensive highway travel or heavy fleet commute.", icon: "✈️" },
+                  { id: "notsure", label: "Not Sure / Varied", desc: "Unpredictable running schedules or seasonal vehicle usage.", icon: "🤷" }
+                ].map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => setDistance(item.id)}
+                    className={`cursor-pointer p-6 rounded-2xl border-2 text-left bg-white transition-all duration-200 hover:border-black flex flex-col justify-between h-40 ${
+                      distance === item.id ? 'border-black ring-2 ring-black/5 shadow-md' : 'border-[#D2D2D7]/60'
+                    }`}
+                  >
+                    <span className="text-3xl">{item.icon}</span>
+                    <div>
+                      <h3 className="font-semibold text-neutral-800 text-sm">{item.label}</h3>
+                      <p className="text-[11px] text-neutral-500 mt-1 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-between max-w-md mx-auto pt-8">
+                <button onClick={handlePrevStep} className="px-6 py-3 border border-neutral-300 rounded-full font-medium hover:border-black transition-all">
+                  Back
+                </button>
+                <button
+                  disabled={!distance}
+                  onClick={handleNextStep}
+                  className={`px-8 py-3 rounded-full font-medium transition-all ${
+                    distance 
+                      ? 'bg-black text-white hover:scale-105' 
+                      : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Use Case */}
+          {currentStep === 3 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 3 of 8 — Purpose</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Your primary driving habitat?</h2>
+                <p className="text-neutral-500 text-lg">We optimize chassis strength, ground clearance, and suspension setups.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto pt-6">
+                {[
+                  { id: 'city', title: "City Commuter", desc: "Bumper-to-bumper traffic, tight parking spaces, light steering.", icon: "🌆" },
+                  { id: 'highway', title: "Highway / Long Trips", desc: "High-speed stability, heavy overtaking power, premium comfort.", icon: "🏁" },
+                  { id: 'city_highway', title: "City + Highway Mix", desc: "Balanced daily urban runs paired with frequent weekend getaways.", icon: "🔄" },
+                  { id: 'offroad', title: "Off-Road Exploration", desc: "Rugged terrain, water wading, high ground clearance, 4x4 options.", icon: "⛰️" },
+                  { id: 'highway_offroad', title: "Highway + Off-Road", desc: "Premium highway touring matched with active wilderness trail-riding.", icon: "🧭" },
+                  { id: 'family', title: "Family Adventures", desc: "Prioritizing boot capacity, spacious second row, absolute safety.", icon: "👨‍👩‍👧‍👦" }
+                ].map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => setUseCase(item.id)}
+                    className={`cursor-pointer p-6 rounded-2xl border-2 text-left bg-white transition-all duration-200 hover:border-black flex flex-col justify-between h-44 ${
+                      useCase === item.id ? 'border-black ring-2 ring-black/5 shadow-md' : 'border-[#D2D2D7]/60'
+                    }`}
+                  >
+                    <span className="text-3xl">{item.icon}</span>
+                    <div>
+                      <h3 className="font-semibold text-neutral-800 text-sm sm:text-base">{item.title}</h3>
+                      <p className="text-xs text-neutral-500 mt-1 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-between max-w-md mx-auto pt-8">
+                <button onClick={handlePrevStep} className="px-6 py-3 border border-neutral-300 rounded-full font-medium hover:border-black transition-all">
+                  Back
+                </button>
+                <button
+                  disabled={!useCase}
+                  onClick={handleNextStep}
+                  className={`px-8 py-3 rounded-full font-medium transition-all ${
+                    useCase 
+                      ? 'bg-black text-white hover:scale-105' 
+                      : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Fuel Type */}
+          {currentStep === 4 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 4 of 8 — Powertrain</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Preferred fuel type?</h2>
+                <p className="text-neutral-500 text-lg">Pick the technology that best matches your environmental and run-rate desires.</p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-3xl mx-auto pt-6">
+                {[
+                  { value: 'Petrol', desc: "Silent, refined, quick power delivery.", icon: "⛽" },
+                  { value: 'Diesel', desc: "Torquey performance, massive highway range.", icon: "🛢️" },
+                  { value: 'CNG', desc: "Unbeatable low cost for daily commutes.", icon: "🌱" },
+                  { value: 'Electric', desc: "Zero emissions, instant throttle, silent run.", icon: "⚡" },
+                  { value: 'Hybrid', desc: "Self-charging, highest city mileage.", icon: "🔄" },
+                  { value: 'Any', desc: "No bias. Show me all best fits.", icon: "💡" }
+                ].map((item) => (
+                  <div
+                    key={item.value}
+                    onClick={() => setFuel(item.value)}
+                    className={`cursor-pointer p-4 rounded-xl border-2 text-left bg-white transition-all duration-200 hover:border-black flex flex-col justify-between h-36 ${
+                      fuel === item.value ? 'border-black ring-2 ring-black/5 shadow-sm' : 'border-[#D2D2D7]/60'
+                    }`}
+                  >
+                    <span className="text-2xl">{item.icon}</span>
+                    <div>
+                      <h3 className="font-semibold text-sm text-neutral-800">{item.value}</h3>
+                      <p className="text-[10px] text-neutral-400 mt-0.5 leading-tight">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-between max-w-md mx-auto pt-8">
+                <button onClick={handlePrevStep} className="px-6 py-3 border border-neutral-300 rounded-full font-medium hover:border-black transition-all">
+                  Back
+                </button>
+                <button
+                  disabled={!fuel}
+                  onClick={handleNextStep}
+                  className={`px-8 py-3 rounded-full font-medium transition-all ${
+                    fuel 
+                      ? 'bg-black text-white hover:scale-105' 
+                      : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 5: Transmission */}
+          {currentStep === 5 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 5 of 8 — Gearbox</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Manual or Automatic?</h2>
+                <p className="text-neutral-500 text-lg">Choose your level of involvement behind the wheel.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-6">
+                {[
+                  { value: 'Manual', desc: "Complete gear control, cheaper initial purchase & repairs.", icon: "🕹️" },
+                  { value: 'Automatic', desc: "Stress-free bumper-to-bumper city commuting with AMT/CVT/DCT.", icon: "⚡" },
+                  { value: 'Any', desc: "I am open to both. Find the ultimate balance.", icon: "🤝" }
+                ].map((item) => (
+                  <div
+                    key={item.value}
+                    onClick={() => setTransmission(item.value)}
+                    className={`cursor-pointer p-6 rounded-2xl border-2 text-left bg-white transition-all duration-200 hover:border-black flex flex-col justify-between h-40 ${
+                      transmission === item.value ? 'border-black ring-2 ring-black/5 shadow-md' : 'border-[#D2D2D7]/60'
+                    }`}
+                  >
+                    <span className="text-2xl">{item.icon}</span>
+                    <div>
+                      <h3 className="font-semibold text-neutral-800">{item.value}</h3>
+                      <p className="text-xs text-neutral-500 mt-1 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-between max-w-md mx-auto pt-8">
+                <button onClick={handlePrevStep} className="px-6 py-3 border border-neutral-300 rounded-full font-medium hover:border-black transition-all">
+                  Back
+                </button>
+                <button
+                  disabled={!transmission}
+                  onClick={handleNextStep}
+                  className={`px-8 py-3 rounded-full font-medium transition-all ${
+                    transmission 
+                      ? 'bg-black text-white hover:scale-105' 
+                      : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 6: Budget Range */}
+          {currentStep === 6 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 6 of 8 — Budget</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Your preferred budget span?</h2>
+                <p className="text-neutral-500 text-lg">Define your comfortable ex-showroom pricing bracket (in Lakhs INR).</p>
+              </div>
+
+              <div className="max-w-xl mx-auto pt-10 px-4 bg-white p-8 rounded-2xl border border-neutral-200">
+                <div className="flex justify-between text-lg font-semibold text-[#1D1D1F] mb-6">
+                  <span>₹{budget[0]} Lakh</span>
+                  <span>₹{budget[1]} Lakh+</span>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="flex space-x-4 items-center">
+                    <span className="text-xs text-neutral-500 w-12">Min Price</span>
+                    <input 
+                      type="range" 
+                      min="4" 
+                      max="20" 
+                      step="1"
+                      value={budget[0]} 
+                      onChange={(e) => setBudget([Math.min(parseInt(e.target.value), budget[1] - 1), budget[1]])}
+                      className="w-full accent-black h-1.5 bg-neutral-200 rounded-lg cursor-pointer" 
+                    />
+                    <span className="text-sm font-medium w-12 text-right">₹{budget[0]}L</span>
+                  </div>
+
+                  <div className="flex space-x-4 items-center">
+                    <span className="text-xs text-neutral-500 w-12">Max Price</span>
+                    <input 
+                      type="range" 
+                      min="10" 
+                      max="35" 
+                      step="1"
+                      value={budget[1]} 
+                      onChange={(e) => setBudget([budget[0], Math.max(parseInt(e.target.value), budget[0] + 1)])}
+                      className="w-full accent-black h-1.5 bg-neutral-200 rounded-lg cursor-pointer" 
+                    />
+                    <span className="text-sm font-medium w-12 text-right">₹{budget[1]}L</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mt-8">
+                  <button 
+                    onClick={() => setBudget([5, 10])}
+                    className="p-2 border border-neutral-200 rounded-lg text-xs font-medium hover:bg-neutral-50 transition-colors"
+                  >
+                    Under ₹10 Lakhs (Budget City)
+                  </button>
+                  <button 
+                    onClick={() => setBudget([8, 16])}
+                    className="p-2 border border-neutral-200 rounded-lg text-xs font-medium hover:bg-neutral-50 transition-colors"
+                  >
+                    ₹8 - ₹16 Lakhs (Mid SUV/Sedan)
+                  </button>
+                  <button 
+                    onClick={() => setBudget([15, 25])}
+                    className="p-2 border border-neutral-200 rounded-lg text-xs font-medium hover:bg-neutral-50 transition-colors"
+                  >
+                    ₹15 - ₹25 Lakhs (Premium Compact)
+                  </button>
+                  <button 
+                    onClick={() => setBudget([5, 35])}
+                    className="p-2 border border-neutral-200 rounded-lg text-xs font-medium hover:bg-neutral-50 transition-colors"
+                  >
+                    No Budget Limit (All models)
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-between max-w-md mx-auto pt-8">
+                <button onClick={handlePrevStep} className="px-6 py-3 border border-neutral-300 rounded-full font-medium hover:border-black transition-all">
+                  Back
+                </button>
+                <button
+                  onClick={handleNextStep}
+                  className="px-8 py-3 bg-black text-white rounded-full font-medium hover:scale-105 transition-all"
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 7: Body Shape */}
+          {currentStep === 7 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 7 of 8 — Body Shape</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Preferred vehicle layout?</h2>
+                <p className="text-neutral-500 text-lg">Pick the silhouette that appeals to your lifestyle aesthetic.</p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 pt-6">
+                {[
+                  { value: 'Hatchback', desc: "Compact & Agile", icon: "🚗" },
+                  { value: 'Sedan', desc: "Elegant & Low-Slung", icon: "🏎️" },
+                  { value: 'SUV', desc: "High Seating & Rugged", icon: "🚙" },
+                  { value: 'MPV', desc: "Max Cabin & Family space", icon: "🚐" },
+                  { value: 'Any', desc: "Open to all body shapes", icon: "✨" }
+                ].map((item) => (
+                  <div
+                    key={item.value}
+                    onClick={() => setBodyType(item.value)}
+                    className={`cursor-pointer p-4 rounded-xl border-2 text-center bg-white transition-all duration-200 hover:border-black flex flex-col justify-center h-40 ${
+                      bodyType === item.value ? 'border-black ring-2 ring-black/5' : 'border-[#D2D2D7]/60'
+                    }`}
+                  >
+                    <span className="text-4xl mb-3">{item.icon}</span>
+                    <h3 className="font-semibold text-sm text-neutral-800">{item.value}</h3>
+                    <p className="text-[10px] text-neutral-400 mt-1 leading-snug">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-between max-w-md mx-auto pt-8">
+                <button onClick={handlePrevStep} className="px-6 py-3 border border-neutral-300 rounded-full font-medium hover:border-black transition-all">
+                  Back
+                </button>
+                <button
+                  disabled={!bodyType}
+                  onClick={handleNextStep}
+                  className={`px-8 py-3 rounded-full font-medium transition-all ${
+                    bodyType 
+                      ? 'bg-black text-white hover:scale-105' 
+                      : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 8: Priority Ranking */}
+          {currentStep === 8 && (
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <span className="text-sm font-semibold text-neutral-500">Step 8 of 8 — Priority</span>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Your top 3 values?</h2>
+                <p className="text-neutral-500 text-lg">Rank them in order of importance. This heavily scores our engines.</p>
+              </div>
+
+              <div className="max-w-2xl mx-auto bg-white p-6 rounded-2xl border border-neutral-200">
+                <div className="flex flex-wrap justify-center gap-3 mb-8">
+                  {['Mileage', 'Safety', 'Features', 'Resale Value', 'Brand Reliability'].map((item) => {
+                    const isRanked = priorities.includes(item);
+                    const rankIndex = priorities.indexOf(item);
+                    return (
+                      <button
+                        key={item}
+                        onClick={() => handlePriorityToggle(item)}
+                        className={`px-5 py-3 rounded-xl border-2 font-medium flex items-center space-x-2 transition-all ${
+                          isRanked 
+                            ? 'border-black bg-neutral-900 text-white shadow-sm' 
+                            : 'border-neutral-200 hover:border-neutral-400 text-neutral-700 bg-white'
+                        }`}
+                      >
+                        <span>{item}</span>
+                        {isRanked && (
+                          <span className="w-5 h-5 bg-white text-black rounded-full text-xs flex items-center justify-center font-bold">
+                            {rankIndex + 1}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {priorities.length > 0 ? (
+                  <div className="border-t border-neutral-100 pt-6">
+                    <h3 className="text-xs font-semibold uppercase text-neutral-400 tracking-wider mb-4 text-center">Your Configured Priority Stack</h3>
+                    <div className="space-y-2 max-w-md mx-auto">
+                      {priorities.map((item, index) => (
+                        <div key={item} className="flex items-center justify-between bg-[#F5F5F7] px-4 py-3 rounded-lg">
+                          <span className="text-sm font-medium text-neutral-500">Priority {index + 1}</span>
+                          <span className="font-bold text-neutral-800">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-neutral-400 text-center italic">Select up to 3 priority items above to rank them.</p>
+                )}
+              </div>
+
+              <div className="flex justify-between max-w-md mx-auto pt-8">
+                <button onClick={handlePrevStep} className="px-6 py-3 border border-neutral-300 rounded-full font-medium hover:border-black transition-all">
+                  Back
+                </button>
+                <button
+                  disabled={priorities.length === 0}
+                  onClick={handleNextStep}
+                  className={`px-8 py-3 rounded-full font-medium transition-all ${
+                    priorities.length > 0 
+                      ? 'bg-black text-white hover:scale-105' 
+                      : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  }`}
+                >
+                  Generate Matches
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 9: Results & Premium Suggested Lineup */}
+          {currentStep === 9 && (
+            <div className="space-y-12">
+              <div className="text-center space-y-4">
+                <span className="text-sm font-bold uppercase tracking-wider text-[#0066CC]">Finder Complete</span>
+                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">Your Recommended Lineup.</h2>
+                <p className="text-neutral-500 max-w-xl mx-auto">We scanned the 2026 Indian automotive specifications list to match your exact configuration.</p>
+              </div>
+
+              <div className="bg-white rounded-3xl p-6 border border-neutral-200/60 max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="border-r border-neutral-100 last:border-0">
+                  <span className="block text-[11px] text-neutral-400 font-semibold uppercase tracking-wider">Seats Needed</span>
+                  <span className="text-lg font-bold text-neutral-800 mt-1 block">{seating === 7 ? "7+ Seater" : seating === 6 ? "6 Seater" : `${seating} Seater`}</span>
+                </div>
+                <div className="border-r border-neutral-100 last:border-0">
+                  <span className="block text-[11px] text-neutral-400 font-semibold uppercase tracking-wider">Budget limit</span>
+                  <span className="text-lg font-bold text-neutral-800 mt-1 block">₹{budget[0]}L - ₹{budget[1]}L</span>
+                </div>
+                <div className="border-r border-neutral-100 last:border-0">
+                  <span className="block text-[11px] text-neutral-400 font-semibold uppercase tracking-wider">Body Silhouette</span>
+                  <span className="text-lg font-bold text-neutral-800 mt-1 block">{bodyType}</span>
+                </div>
+                <div>
+                  <span className="block text-[11px] text-neutral-400 font-semibold uppercase tracking-wider">Preferred Fuel</span>
+                  <span className="text-lg font-bold text-neutral-800 mt-1 block">{fuel}</span>
+                </div>
+              </div>
+
+              {/* Recommendations Matches List with 100% Unique Images */}
+              <div className="space-y-6 max-w-4xl mx-auto">
+                <h3 className="text-lg font-semibold border-b pb-3 border-neutral-200">The Top 3 Matches</h3>
+                
+                {recommendations.slice(0, 3).map((car, idx) => {
+                  const isCompared = compareList.includes(car.id);
+                  return (
+                    <div 
+                      key={car.id} 
+                      className={`bg-white rounded-3xl overflow-hidden border transition-all duration-300 relative ${
+                        idx === 0 ? 'border-neutral-900 ring-1 ring-black/5' : 'border-neutral-200'
+                      }`}
+                    >
+                      {idx === 0 && (
+                        <div className="absolute top-0 left-0 bg-neutral-900 text-white text-[10px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-br-2xl z-10">
+                          ⭐️ Best Overall Match
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-6 md:p-8">
+                        <div className="md:col-span-5 relative group overflow-hidden rounded-2xl bg-[#F5F5F7]">
+                          <img 
+                            src={car.imageUrl} 
+                            alt={car.name} 
+                            className="w-full h-48 md:h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                          
+                          <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md text-black px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1.5">
+                            <span className="font-extrabold text-sm">{car.score}%</span>
+                            <span className="text-[10px] uppercase font-semibold text-neutral-500">Score</span>
+                          </div>
+                        </div>
+
+                        <div className="md:col-span-7 flex flex-col justify-between space-y-4">
+                          <div>
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <div>
+                                <span className="text-xs uppercase tracking-wider text-neutral-400 font-bold">{car.brand}</span>
+                                <h4 className="text-2xl font-extrabold text-[#1D1D1F] mt-0.5">{car.name}</h4>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-xs text-neutral-400 block font-semibold uppercase">Ex-Showroom Price</span>
+                                <span className="text-xl font-black text-black">₹{car.priceMin} - {car.priceMax} Lakh</span>
+                              </div>
+                            </div>
+
+                            <p className="text-sm text-neutral-500 mt-3 leading-relaxed">{car.desc}</p>
+
+                            <div className="grid grid-cols-2 gap-y-3 gap-x-4 pt-4 mt-4 border-t border-neutral-100 text-xs">
+                              <div>
+                                <span className="text-neutral-400 block">Fuel Variants</span>
+                                <span className="font-semibold text-neutral-800">{car.fuels.join(", ")}</span>
+                              </div>
+                              <div>
+                                <span className="text-neutral-400 block">ARAI/EV Certified Range</span>
+                                <span className="font-semibold text-neutral-800">{car.mileage}</span>
+                              </div>
+                              <div>
+                                <span className="text-neutral-400 block">Safety Ranking</span>
+                                <span className="font-semibold text-neutral-800">⭐ {car.safetyRating}/5 GNCAP</span>
+                              </div>
+                              <div>
+                                <span className="text-neutral-400 block">Layout Configuration</span>
+                                <span className="font-semibold text-neutral-800">{car.bodyType} • {car.seats} Seats</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="bg-[#F5F5F7] p-4 rounded-xl space-y-1.5">
+                            <span className="text-[10px] uppercase font-bold text-neutral-400 block tracking-wider">Why this is your perfect match:</span>
+                            {car.matchReasons.map((reason, rIdx) => (
+                              <div key={rIdx} className="flex items-center space-x-2 text-xs text-neutral-700">
+                                <span className="text-green-500 font-bold">✓</span>
+                                <span>{reason}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2">
+                            <label className="flex items-center space-x-2 cursor-pointer select-none">
+                              <input 
+                                type="checkbox" 
+                                checked={isCompared}
+                                onChange={() => handleCompareCheck(car.id)}
+                                className="w-4.5 h-4.5 accent-black rounded border-neutral-300" 
+                              />
+                              <span className="text-xs font-semibold text-neutral-600">Select to Compare side-by-side</span>
+                            </label>
+
+                            <a 
+                              href={`https://www.google.com/search?q=${encodeURIComponent(car.brand + " " + car.name + " on road price in India 2026")}`} 
+                              target="_blank" 
+                              rel="noreferrer" 
+                              className="text-xs font-bold text-[#0066CC] hover:underline flex items-center space-x-1"
+                            >
+                              <span>Explore On-Road Quotes</span>
+                              <span>→</span>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Direct side-by-side comparison matrix of selected options */}
+              {compareList.length > 0 && (
+                <div className="bg-white rounded-3xl p-6 md:p-8 border border-neutral-200 max-w-4xl mx-auto space-y-6">
+                  <div className="flex justify-between items-center border-b pb-4">
+                    <div>
+                      <h3 className="text-xl font-bold">Direct Feature Comparison</h3>
+                      <p className="text-xs text-neutral-400 mt-1">Comparing up to 3 models side-by-side based on your priority parameters.</p>
+                    </div>
+                    <span className="text-xs font-semibold px-3 py-1 bg-neutral-100 rounded-full text-neutral-600">
+                      {compareList.length} Selected
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm border-collapse min-w-[500px]">
+                      <thead>
+                        <tr className="border-b border-neutral-100">
+                          <th className="py-3 text-xs uppercase text-neutral-400 font-bold w-1/4">Feature Specs</th>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return (
+                              <th key={cid} className="py-3 font-extrabold text-neutral-800 text-center">
+                                {match?.name}
+                              </th>
+                            );
+                          })}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-neutral-100 text-neutral-700">
+                        <tr>
+                          <td className="py-4 font-semibold text-neutral-500">Starting Price</td>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return <td key={cid} className="py-4 text-center font-bold text-neutral-800">₹{match?.priceMin} Lakh onwards</td>;
+                          })}
+                        </tr>
+                        <tr>
+                          <td className="py-4 font-semibold text-neutral-500">Body Layout</td>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return <td key={cid} className="py-4 text-center">{match?.bodyType}</td>;
+                          })}
+                        </tr>
+                        <tr>
+                          <td className="py-4 font-semibold text-neutral-500">Seating Limit</td>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return <td key={cid} className="py-4 text-center">{match?.seats} Seater</td>;
+                          })}
+                        </tr>
+                        <tr>
+                          <td className="py-4 font-semibold text-neutral-500">Powertrains Available</td>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return <td key={cid} className="py-4 text-center text-xs">{match?.fuels.join(", ")}</td>;
+                          })}
+                        </tr>
+                        <tr>
+                          <td className="py-4 font-semibold text-neutral-500">ARAI Mileage Stats</td>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return <td key={cid} className="py-4 text-center text-xs text-emerald-600 font-medium">{match?.mileage}</td>;
+                          })}
+                        </tr>
+                        <tr>
+                          <td className="py-4 font-semibold text-neutral-500">Global NCAP Safety</td>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return (
+                              <td key={cid} className="py-4 text-center font-semibold text-neutral-800">
+                                ⭐ {match?.safetyRating} / 5
+                              </td>
+                            );
+                          })}
+                        </tr>
+                        <tr>
+                          <td className="py-4 font-semibold text-neutral-500">Core Strength</td>
+                          {compareList.map(cid => {
+                            const match = recommendations.find(c => c.id === cid);
+                            return (
+                              <td key={cid} className="py-4 text-center">
+                                <span className="inline-block bg-neutral-100 text-neutral-700 text-[10px] px-2.5 py-1 rounded-full font-bold">
+                                  {match?.strongSuit[0]}
+                                </span>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-8 text-center">
+                <button
+                  onClick={resetConfigurator}
+                  className="px-8 py-3.5 bg-black text-white rounded-full font-semibold hover:bg-neutral-800 transition-all hover:scale-105"
+                >
+                  Configure Another Path
+                </button>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </main>
+
+      {/* Footer copyright */}
+      <footer className="border-t border-[#D2D2D7]/50 py-8 bg-white/60">
+        <div className="max-w-6xl mx-auto px-6 text-center text-xs text-neutral-500 space-y-2">
+          <p>© 2026 Car Finder Configurator. Model information verified utilizing latest Indian market ARAI metrics.</p>
+          <p>Product features and ex-showroom price indexes are approximations. Region specific variations may apply.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
